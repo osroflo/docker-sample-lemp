@@ -1,0 +1,32 @@
+version: '2'
+services:
+    nginx:
+        build: ./docker/nginx            
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/logs:/log
+        ports:
+            - "8081:80"
+        links:
+            - app
+
+    app:
+        build: ./docker/php
+        volumes:
+            - ./:/var/www
+        links:
+            - mysql
+
+    mysql:
+        build: ./docker/mysql
+        volumes:
+            - ./docker/mysql/data:/var/lib/mysql/:z
+
+        ports:
+            - "3307:3306"
+
+        restart: always
+
+        environment:
+            MYSQL_ROOT_PASSWORD: 123456
+            MYSQL_DATABASE: sample_db_name
